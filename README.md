@@ -260,7 +260,7 @@ The Finish power report is shown below:
 
 At the end, OpenROAD Flow will output its logs under flow/reports/, and its results under flow/results/.
 
-<img width="722" alt="Screenshot 2022-11-02 at 10 42 11 AM" src="https://user-images.githubusercontent.com/110079631/199405017-d427816c-0e50-428c-bdfd-69027d23aa45.png">
+<img width="722" alt="Screenshot 2022-11-02 at 10 42 38 AM" src="https://user-images.githubusercontent.com/110079631/199405258-aff2ce8b-3375-4213-aa97-fa9bc43327f2.png">
 
 
 Here's an overview of all changes made from OpenROAD Flow to OpenFASoC’s temp-sense-gen (the reference directory taken is [temp-sense-gen/flow/](https://github.com/idea-fasoc/OpenFASOC/tree/main/openfasoc/generators/temp-sense-gen/flow):
