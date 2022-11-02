@@ -57,6 +57,12 @@ The layout of the SLC cell is shown below:
 
 <img width="1512" alt="Screenshot 2022-11-02 at 3 26 13 AM" src="https://user-images.githubusercontent.com/110079631/199349926-63135ad7-fd85-42bc-998a-dac48b1ad5f1.png">
 
+Block Diagram of the flow:
+--------------------------
+
+![photo_2022-11-02 10 43 24](https://user-images.githubusercontent.com/110079631/199403863-d02e56c8-40ad-417f-9002-d7130cf23770.jpeg)
+
+
 Generator Flow
 --------------
 
@@ -69,6 +75,13 @@ To run the default generator, ``cd`` into [openfasoc/generators/temp-sense-gen/]
   make sky130hd_temp
 
 ```
+
+<img width="722" alt="Screenshot 2022-11-02 at 10 38 32 AM" src="https://user-images.githubusercontent.com/110079631/199403946-b3878cfe-c8ca-48b0-aac2-fea51340a56d.png">
+
+Initially the workspace is cleaned before the flow starts:
+
+<img width="718" alt="Screenshot 2022-11-02 at 10 38 48 AM" src="https://user-images.githubusercontent.com/110079631/199404067-67245698-3411-425b-981b-64e63f8a7224.png">
+
   For other generator options, use `make help`.
 
 The default circuit's physical design generation can be divided into three parts:
@@ -82,6 +95,8 @@ Verilog generation
 
 Running ``make sky130hd_temp`` (temp for "temperature sensor") executes the [temp-sense-gen.py](https://github.com/idea-fasoc/OpenFASOC/blob/main/openfasoc/generators/temp-sense-gen/tools/temp-sense-gen.py) script from temp-sense-gen/tools/. 
 This file takes the input specifications from [test.json](https://github.com/idea-fasoc/OpenFASOC/blob/main/openfasoc/generators/temp-sense-gen/test.json) and outputs Verilog files containing the description of the circuit.
+
+<img width="725" alt="Screenshot 2022-11-02 at 10 39 11 AM" src="https://user-images.githubusercontent.com/110079631/199404163-53175bd6-0070-4c92-af11-7540c8a3eacc.png">
 
  **Note:**
     - temp-sense-gen.py calls other modules from temp-sense-gen/tools/ during execution. For example, [readparamgen.py](https://github.com/idea-fasoc/OpenFASOC/blob/main/openfasoc/generators/temp-sense-gen/tools/readparamgen.py) is in charge of reading test.json, checking for correct user input and choosing the correct circuit elements.
@@ -154,15 +169,23 @@ Some changes are then made to customize the OpenROAD Flow repo and generate a wo
   
 Synthesis
 ---------
-The OpenROAD Flow starts with a flow configuration file [config.mk](https://github.com/idea-fasoc/OpenFASOC/blob/main/openfasoc/generators/temp-sense-gen/flow/design/sky130hd/tempsense/config.mk), the chosen platform (sky130hd, for example) and the Verilog files generated from the previous part.
+The OpenROAD Flow starts with a flow configuration file [config.mk](https://github.com/idea-fasoc/OpenFASOC/blob/main/openfasoc/generators/temp-sense-gen/flow/design/sky130hd/tempsense/config.mk), the chosen platform (sky130hd, for example) and the Verilog files are generated from the previous part.
 
-From them, synthesis is run using Yosys to find the appropriate circuit implementation from the available cells in the platform.
+The synthesis is run using Yosys to find the appropriate circuit implementation from the available cells in the platform.
+
+<img width="722" alt="Screenshot 2022-11-02 at 10 39 22 AM" src="https://user-images.githubusercontent.com/110079631/199404334-e25352cd-5913-45a7-9d5c-494d25c7d29b.png">
+
 
 Floorplan
 ---------
 
 
 Then, the floorplan for the physical design is generated with OpenROAD, which requires a description of the power delivery network in [pdn.cfg](https://github.com/idea-fasoc/OpenFASOC/blob/main/openfasoc/generators/temp-sense-gen/blocks/sky130hd/pdn.cfg).
+
+The floorplan final power report is shown below:
+
+<img width="721" alt="Screenshot 2022-11-02 at 10 40 05 AM" src="https://user-images.githubusercontent.com/110079631/199404465-00b2cfbf-a976-4e8c-bbbc-b79bc1793535.png">
+
 
 This temperature sensor design implements two voltage domains: one for the VDD that powers most of the circuit, and another for the VIN that powers the ring oscillator and is an output of the HEADER cells. Such voltage domains are created within the [floorplan.tcl](https://github.com/idea-fasoc/OpenFASOC/blob/main/openfasoc/generators/temp-sense-gen/flow/scripts/floorplan.tcl#L34) script, with the following lines of code:
 
@@ -196,6 +219,15 @@ Placement
 
 Placement *takes place* after the floorplan is ready and has two phases: global placement and detailed placement. The output of this phase will have all instances placed in their corresponding voltage domain, ready for routing.
 
+The Global Placement power report is shown below:
+
+<img width="723" alt="Screenshot 2022-11-02 at 10 40 49 AM" src="https://user-images.githubusercontent.com/110079631/199404631-8e390de7-cdba-458b-b525-16c2fe492724.png">
+
+The Detail Placement power report is shown below:
+
+<img width="722" alt="Screenshot 2022-11-02 at 10 41 10 AM" src="https://user-images.githubusercontent.com/110079631/199404714-e153f378-a436-4557-80f5-c242560305fe.png">
+
+
 Routing
 -------
 
@@ -214,11 +246,22 @@ Routing is also divided into two phases: global routing and detailed routing. Ri
 
 This script sources two other files: [add_ndr_rules.tcl](https://github.com/idea-fasoc/OpenFASOC/blob/main/openfasoc/generators/temp-sense-gen/flow/scripts/openfasoc/add_ndr_rules.tcl), which adds an NDR rule to the VIN net to improve routes that connect both voltage domains, and [create_custom_connections.tcl](https://github.com/idea-fasoc/OpenFASOC/blob/main/openfasoc/generators/temp-sense-gen/flow/scripts/openfasoc/create_custom_connections.tcl), which creates the connection between the VIN net and the HEADER instances.
 
+The Global route power report is shown below:
+
+<img width="722" alt="Screenshot 2022-11-02 at 10 41 36 AM" src="https://user-images.githubusercontent.com/110079631/199404867-b6335e4c-80a9-4690-a693-51fdb913c144.png">
+
+The Finish power report is shown below:
+
+<img width="722" alt="Screenshot 2022-11-02 at 10 42 11 AM" src="https://user-images.githubusercontent.com/110079631/199404944-67385216-7156-4c45-8cc3-c2025e7f7af1.png">
+
  **Final layout after routing:**
  
  <img width="1512" alt="Screenshot 2022-10-29 at 11 39 37 AM" src="https://user-images.githubusercontent.com/110079631/199332534-5951cad9-c38c-4d2d-bf93-e37be27c67b0.png">
 
 At the end, OpenROAD Flow will output its logs under flow/reports/, and its results under flow/results/.
+
+<img width="722" alt="Screenshot 2022-11-02 at 10 42 11 AM" src="https://user-images.githubusercontent.com/110079631/199405017-d427816c-0e50-428c-bdfd-69027d23aa45.png">
+
 
 Here's an overview of all changes made from OpenROAD Flow to OpenFASoC’s temp-sense-gen (the reference directory taken is [temp-sense-gen/flow/](https://github.com/idea-fasoc/OpenFASOC/tree/main/openfasoc/generators/temp-sense-gen/flow):
 
