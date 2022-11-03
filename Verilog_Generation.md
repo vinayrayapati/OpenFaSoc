@@ -14,6 +14,9 @@ Running ``make sky130hd_temp`` (temp for "temperature sensor") executes the [tem
             └── function.py               2.Modify the verilog templates according to the specs.
                                           3.Write the output verilog files.
 ```
+
+<img width="722" alt="Screenshot 2022-11-02 at 10 38 32 AM" src="https://user-images.githubusercontent.com/110079631/199403946-b3878cfe-c8ca-48b0-aac2-fea51340a56d.png">
+
 **Steps happening in readparamgen.py:-**
   1. Identifies the path to the json spec file and the Identifies the platforms.Only sky130hd and sky130hs platforms are supported as of now
   2. Load json spec file:- Runs checks on the json file and following errors are produced on mismatches.
@@ -28,7 +31,9 @@ Running ``make sky130hd_temp`` (temp for "temperature sensor") executes the [tem
             Error: Supported temperature sensing must be inside the following range [-20 to 100] Celcius
             Error: Please enter a supported optmization strategy [error or power]
 ```
-  5. Search starts for min power,min error and extract the number of inverters and headers.
+  5. Search starts for min power,min error and extract the number of inverters and headers. The search done and the resultant parameters(specs) is shown in the image below:-
+  
+  <img width="718" alt="Screenshot 2022-11-02 at 10 38 48 AM" src="https://user-images.githubusercontent.com/110079631/199404067-67245698-3411-425b-981b-64e63f8a7224.png">
   
   **Steps happening in TEMP_netlist.py:-**
   1. Reads the verilog templates(TEMP_ANALOG_lv.v,TEMP_ANALOG_hv.v,counter_generic.v).
