@@ -41,19 +41,35 @@ Running ``make sky130hd_temp`` (temp for "temperature sensor") executes the [tem
   3. The lines marked with @@  are replaced according to the specifications.SLC replaced with SLC a_lc_0(.IN(out), .INB(outb), .VOUT(lc_0).nbout replaced with port(X).
 ```
 BEFORE MODIFICATION:
-(* keep *)
-@@ @nf a_header_@nh(.VIN(VIN));
-SLC
-@@ @no a_buffer_0 (.A(lc_0), .nbout(lc_out));
+@@ wire n@nn;
+wire nx1, nx2, nx3, nb1, nb2;
+@@ @na a_nand_0 ( .A(EN), .B(n@n0), .Y(n1));
+@@ @nb a_inv_@ni ( .A(n@n1), .Y(n@n2));
+@@ @ng a_inv_m1 ( .A(n@n3), .Y(nx1));
+@@ @nk a_inv_m2 ( .A(n@n4), .Y(nx2));
+@@ @nm a_inv_m3 ( .A(nx2), .Y(nx3));
+@@ @np a_buf_3 ( .A(nx3), .nbout(nb2));
+@@ @nc a_buf_0 ( .A(nx1), .nbout(nb1));
+@@ @nd a_buf_1 ( .A(nb1), .nbout(OUT));
+@@ @ne a_buf_2 ( .A(nb2), .nbout(OUTB));
 ```
 ```
 AFTER MODIFICATION:
-(* keep *)
-HEADER a_header_0(.VIN(VIN));
-HEADER a_header_1(.VIN(VIN));
-HEADER a_header_2(.VIN(VIN));
-SLC a_lc_0(.IN(out), .INB(outb), .VOUT(lc_0));
-sky130_fd_sc_hd__buf_1 a_buffer_0 (.A(lc_0), .X(lc_out));
+wire nx1, nx2, nx3, nb1, nb2;
+sky130_fd_sc_hd__nand2_1 a_nand_0 ( .A(EN), .B(n7), .Y(n1));
+sky130_fd_sc_hd__inv_1 a_inv_0 ( .A(n1), .Y(n2));
+sky130_fd_sc_hd__inv_1 a_inv_1 ( .A(n2), .Y(n3));
+sky130_fd_sc_hd__inv_1 a_inv_2 ( .A(n3), .Y(n4));
+sky130_fd_sc_hd__inv_1 a_inv_3 ( .A(n4), .Y(n5));
+sky130_fd_sc_hd__inv_1 a_inv_4 ( .A(n5), .Y(n6));
+sky130_fd_sc_hd__inv_1 a_inv_5 ( .A(n6), .Y(n7));
+sky130_fd_sc_hd__inv_1 a_inv_m1 ( .A(n7), .Y(nx1));
+sky130_fd_sc_hd__inv_1 a_inv_m2 ( .A(n7), .Y(nx2));
+sky130_fd_sc_hd__inv_1 a_inv_m3 ( .A(nx2), .Y(nx3));
+sky130_fd_sc_hd__buf_1 a_buf_3 ( .A(nx3), .X(nb2));
+sky130_fd_sc_hd__buf_1 a_buf_0 ( .A(nx1), .X(nb1));
+sky130_fd_sc_hd__buf_1 a_buf_1 ( .A(nb1), .X(OUT));
+sky130_fd_sc_hd__buf_1 a_buf_2 ( .A(nb2), .X(OUTB));
 ```
   5. Writes the output verilog files(TEMP_ANALOG_lv.nl.v,TEMP_ANALOG_hv.nl.v,counter.v).
   
@@ -70,5 +86,21 @@ sky130_fd_sc_hd__buf_1 a_buffer_0 (.A(lc_0), .X(lc_out));
 ```
   3. Invokes TEMP_netlist.py to make a changes regarding SLC and port(X) in verilog templates.
   4. Read verilog templates and Make changes regarding the HEADER cell in verilog templates.
-  5. Write the output verilog files.
+```
+BEFORE MODIFICATION:
+(* keep *)
+@@ @nf a_header_@nh(.VIN(VIN));
+SLC
+@@ @no a_buffer_0 (.A(lc_0), .nbout(lc_out));
+```
+```
+AFTER MODIFICATION:
+(* keep *)
+HEADER a_header_0(.VIN(VIN));
+HEADER a_header_1(.VIN(VIN));
+HEADER a_header_2(.VIN(VIN));
+SLC a_lc_0(.IN(out), .INB(outb), .VOUT(lc_0));
+sky130_fd_sc_hd__buf_1 a_buffer_0 (.A(lc_0), .X(lc_out));
+```
+  6. Write the output verilog files.
   
