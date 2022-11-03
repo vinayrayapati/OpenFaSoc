@@ -39,7 +39,23 @@ Running ``make sky130hd_temp`` (temp for "temperature sensor") executes the [tem
   1. Reads the verilog templates(TEMP_ANALOG_lv.v,TEMP_ANALOG_hv.v,counter_generic.v).
   2. Reads the result parameter specs from the readparamgen.py(ninv,nhead).
   3. The lines marked with @@  are replaced according to the specifications.SLC replaced with SLC a_lc_0(.IN(out), .INB(outb), .VOUT(lc_0).nbout replaced with port(X).
-  4. Writes the output verilog files(TEMP_ANALOG_lv.nl.v,TEMP_ANALOG_hv.nl.v,counter.v).
+```
+BEFORE MODIFICATION:
+(* keep *)
+@@ @nf a_header_@nh(.VIN(VIN));
+SLC
+@@ @no a_buffer_0 (.A(lc_0), .nbout(lc_out));
+```
+```
+AFTER MODIFICATION:
+(* keep *)
+HEADER a_header_0(.VIN(VIN));
+HEADER a_header_1(.VIN(VIN));
+HEADER a_header_2(.VIN(VIN));
+SLC a_lc_0(.IN(out), .INB(outb), .VOUT(lc_0));
+sky130_fd_sc_hd__buf_1 a_buffer_0 (.A(lc_0), .X(lc_out));
+```
+  5. Writes the output verilog files(TEMP_ANALOG_lv.nl.v,TEMP_ANALOG_hv.nl.v,counter.v).
   
   **Steps happening in tempsense-gen.py:-**
   1.Invokes readparamgen.py to get the resultant specs and platform.
