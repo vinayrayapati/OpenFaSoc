@@ -17,17 +17,17 @@ Running ``make sky130hd_temp`` (temp for "temperature sensor") executes the [tem
 **Steps happening in readparamgen.py:-**
   1. Identifies the path to the json spec file and the Identifies the platforms.Only sky130hd and sky130hs platforms are supported as of now
   2. Load json spec file:- Runs checks on the json file and following errors are produced on mismatches.
-            ```
+```
             Error occurred opening or loading json file.
             Error: Generator specification must be "temp-sense-gen.
             Error: Bad Input Specfile. 'module_name' variable is missing.
-            ```
+```
   3. Loads the model file `modelfile.csv` and runs checks on it. If the model file is not valid a default model file in repo`.model_tempsense` is used.
   4. Load the Design specs and parameters from the spec file amd following errors are created on mismatch.
-            ```
+```
             Error: Supported temperature sensing must be inside the following range [-20 to 100] Celcius
             Error: Please enter a supported optmization strategy [error or power]
-            ```
+```
   5. Search starts for min power,min error and extract the number of inverters and headers.
   
   **Steps happening in TEMP_netlist.py:-**
@@ -39,14 +39,14 @@ Running ``make sky130hd_temp`` (temp for "temperature sensor") executes the [tem
   **Steps happening in tempsense-gen.py:-**
   1.Invokes readparamgen.py to get the resultant specs and platform.
   2.Sets the aux cells.
-          ```
+```
             aux1 = "sky130_fd_sc_hd__nand2_1"
             aux2 = "sky130_fd_sc_hd__inv_1"
             aux3 = "sky130_fd_sc_hd__buf_1"
             aux4 = "sky130_fd_sc_hd__buf_1"
             aux5 = "HEADER"
             aux6 = "SLC"
-          ```
+```
   3. Invokes TEMP_netlist.py to make a changes regarding SLC and port(X) in verilog templates.
   4. Read verilog templates and Make changes regarding the HEADER cell in verilog templates.
   5. Write the output verilog files.
