@@ -102,5 +102,5 @@ HEADER a_header_2(.VIN(VIN));
 SLC a_lc_0(.IN(out), .INB(outb), .VOUT(lc_0));
 sky130_fd_sc_hd__buf_1 a_buffer_0 (.A(lc_0), .X(lc_out));
 ```
-  6. Write the output verilog files to the [src](https://github.com/idea-fasoc/OpenFASOC/tree/cbfe054c6e918b567b98ef8f70a79769747a37a8/openfasoc/generators/temp-sense-gen/flow/design/src)folder .
+  6. Write the output verilog files to the [src](https://github.com/idea-fasoc/OpenFASOC/tree/cbfe054c6e918b567b98ef8f70a79769747a37a8/openfasoc/generators/temp-sense-gen/flow/design/src) folder .
   
