@@ -107,7 +107,8 @@ sky130_fd_sc_hd__buf_1 a_buffer_0 (.A(lc_0), .X(lc_out));
 # Expected inputs for a new design:
 
 ```
--> Verilog Templates --> Consists of the auxcell connections and instantiations.
+-> Verilog Templates --> Consists of the auxcell connections and instantiations according the schematic.
 -> Extracted parameters from the model file
 -> gds,lef files of aux cells
+-> Final modification of the python scripts according to the above three inputs.
 ```
