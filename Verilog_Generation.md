@@ -104,3 +104,10 @@ sky130_fd_sc_hd__buf_1 a_buffer_0 (.A(lc_0), .X(lc_out));
 ```
   6. Write the output verilog files to the [src](https://github.com/idea-fasoc/OpenFASOC/tree/cbfe054c6e918b567b98ef8f70a79769747a37a8/openfasoc/generators/temp-sense-gen/flow/design/src/tempsense) folder .
   
+# Expected inputs for a new design:
+
+```
+-> Verilog Templates --> Consists of the auxcell connections and instantiations.
+-> Extracted parameters from the model file
+-> gds,lef files of aux cells
+```
