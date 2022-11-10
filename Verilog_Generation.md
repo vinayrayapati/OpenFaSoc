@@ -5,11 +5,13 @@ Running ``make sky130hd_temp`` (temp for "temperature sensor") executes the [tem
 `temp-sense-gen.py` calls other modules from temp-sense-gen/tools/ during execution
 
 ```
-  temp-sense-gen.py
+  temp-sense-gen.py---------------------> Integration of the aux cells and verilog templates.
+    |
     |-- readparamgen.py-----------------> 1.loads the json file
     |       └── simulation.py             2.Identifies the platforms
     |                                     3.Running checks on user inputs
     |                                     4.Choosing the correct circuit elements
+    |                                     5.Final Parameter Extraction
     |-- TEMP_netlist.py-----------------> 1.Reads the verilog templates and required specs.
             └── function.py               2.Modify the verilog templates according to the specs.
                                           3.Write the output verilog files.
@@ -109,9 +111,74 @@ sky130_fd_sc_hd__buf_1 a_buffer_0 (.A(lc_0), .X(lc_out));
 
 ```
 -> Verilog Templates --> Consists of the auxcell connections and instantiations according to the design schematic.
--> Extracted parameters from the model file
+-> model file
+-> Parameter Extraction
 -> gds,lef files of aux cells
--> Final modification of the python scripts according to the above three inputs.
+-> Final modification of the python scripts according to the above four inputs.
 ```
 **1. Verilog Templates:**
-The Verilog Templates are verilog files where all the digital blocks of the circuit are written directly either in behavioural or structural verilog format. Now, for the Analog blocks of the circuit, it is subdivided into a number of aux cells in the previous step of aux cell generation. The instantiations and the connections among these aux cells and then to the digital block is needed. Each aux cell is considered as a seperate module and instantiations and connections are made by referencing the Schematic of the required Circuit.The place where these module instantiations for the aux cells are needed we represent them by @@ in the verilog template with the appropriate port connections.
+- The Verilog Templates are verilog files where all the digital blocks of the circuit are written directly either in behavioural or structural verilog format. 
+- Now, for the Analog blocks of the circuit, it is subdivided into a number of aux cells in the previous step of aux cell generation. The instantiations and the connections among these aux cells and then to the digital block is needed. 
+- Each aux cell is considered as a seperate module and instantiations and connections are made by referencing the Schematic of the required Circuit.
+- The place where these module instantiations for the aux cells are needed we represent them by @@ in the verilog template with the appropriate port connections.
+- The Examples of the Verilog templates before and after modification can be seen above.
+
+**2. Model file:**
+- The [model_file](https://github.com/idea-fasoc/OpenFASOC/blob/main/openfasoc/generators/temp-sense-gen/models/modelfile.csv) is required to extract the parameters for the aux cell integration and verilog generation depending on the user input requirements for the Analog Circuit design.
+- The [model_file](https://github.com/idea-fasoc/OpenFASOC/blob/main/openfasoc/generators/temp-sense-gen/models/modelfile.csv) should consist of the design specifications which vary for the different user requirement functions, from which the iterations for the best parameter selection is done to meet the user required design specifications.
+**Example:**
+- For the tempsense-generator in which the [model_file](https://github.com/idea-fasoc/OpenFASOC/blob/main/openfasoc/generators/temp-sense-gen/models/modelfile.csv) consists of the following parameters:
+```
+Temp	 Frequency	 Power	 Error	 inv	 header
+```
+<img width="1168" alt="Screenshot 2022-11-10 at 1 35 32 PM" src="https://user-images.githubusercontent.com/110079631/201035257-fd516799-24a9-4c69-86f8-f72ee0873f1c.png">
+
+- The user requirement of the min and max temperature range is given in the [test.json](https://github.com/idea-fasoc/OpenFASOC/blob/cbfe054c6e918b567b98ef8f70a79769747a37a8/openfasoc/generators/temp-sense-gen/test.json) file. 
+```
+{
+    "module_name": "tempsenseInst_error",
+    "generator": "temp-sense-gen",
+    "specifications": {
+    	"temperature": { "min": -20, "max": 100 }, 
+    	"power": "",
+    	"error": "",
+    	"area": "",
+    	"optimization":"error",
+    	"model" :"modelfile.csv"
+	}
+}
+```
+
+**3. Parameter Extraction**
+- The iterations for the search of the best parameters are done which gives the least Error and min power considering the above tempsense-gen model file as example. The corresponding parameters satisfying this requirements is extracted which gives the number of inverter cells and the header aux cells required for the design of this Analog circuit.
+- Reference: Checkout out the steps happening in the [readparamgen.py](https://github.com/idea-fasoc/OpenFASOC/blob/cbfe054c6e918b567b98ef8f70a79769747a37a8/openfasoc/generators/temp-sense-gen/tools/readparamgen.py) python script explained above.
+
+**4. GDS, LEF files for aux cells**
+- The Design circuit is broke down into analog and digital blocks first before the aux cell generation stage. The digital blocks are directly incorporated in the Verilog templates and the analog blocks are taken to the aux cell generation stage.
+- Then the analog blocks are further broke down into aux cells each not containing more than 10 to 12 transistors. Each aux cell is then seperately ran to generate lef and gds layout files.These files are added in the [config.mk](https://github.com/idea-fasoc/OpenFASOC/blob/cbfe054c6e918b567b98ef8f70a79769747a37a8/openfasoc/generators/temp-sense-gen/flow/design/sky130hd/tempsense/config.mk) file as ADDITIONAL LEF and ADDITIONAL GDS files.
+```
+export ADDITIONAL_LEFS  	= ../blocks/$(PLATFORM)/lef/HEADER.lef \
+                        	  ../blocks/$(PLATFORM)/lef/SLC.lef
+
+export ADDITIONAL_GDS_FILES 	= ../blocks/$(PLATFORM)/gds/HEADER.gds \
+			      	  ../blocks/$(PLATFORM)/gds/SLC.gds
+```
+- And also a BLACK_BOX verilog template [tempsenseInst.blackbox.v](https://github.com/idea-fasoc/OpenFASOC/blob/cbfe054c6e918b567b98ef8f70a79769747a37a8/openfasoc/generators/temp-sense-gen/blocks/sky130hd/tempsenseInst.blackbox.v) is created to call these aux cell modules and incorporate them in the verilog generation process.
+```
+(* blackbox *) module SLC(
+  output VOUT,
+  input IN,
+  input INB
+);
+endmodule
+(* keep_hierarchy *)
+(* blackbox *) module HEADER(
+  inout VIN
+);
+parameter dont_touch = "on";
+endmodule
+```
+
+**5. Final modification of the python scripts according to the above four inputs**
+- This is the Actual Verilog generation stage where the above four inputs are taken into consideration and a pyhton script exclusive to the present design is created.
+- The python scripts for the example of tempsense-gen are [temp-sense-gen.py](https://github.com/idea-fasoc/OpenFASOC/blob/main/openfasoc/generators/temp-sense-gen/tools/temp-sense-gen.py) and [TEMP_netlist.py](https://github.com/idea-fasoc/OpenFASOC/blob/cbfe054c6e918b567b98ef8f70a79769747a37a8/openfasoc/generators/temp-sense-gen/tools/TEMP_netlist.py), for which the steps happening are clearly described above.
