@@ -110,11 +110,11 @@ sky130_fd_sc_hd__buf_1 a_buffer_0 (.A(lc_0), .X(lc_out));
 -----------------------------------
 
 ```
--> Verilog Templates --> Consists of the auxcell connections and instantiations according to the design schematic.
--> model file
--> Parameter Extraction
--> gds,lef files of aux cells
--> Final modification of the python scripts according to the above four inputs.
+-> 1. Verilog Templates --> Consists of the auxcell connections and instantiations according to the design schematic.
+-> 2. model file
+-> 3. Parameter Extraction
+-> 4. gds,lef files of aux cells
+-> 5. Final modification of the python scripts according to the above four inputs.
 ```
 **1. Verilog Templates:**
 - The Verilog Templates are verilog files where all the digital blocks of the circuit are written directly either in behavioural or structural verilog format. 
