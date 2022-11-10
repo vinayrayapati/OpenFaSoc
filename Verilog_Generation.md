@@ -178,7 +178,29 @@ endmodule
 parameter dont_touch = "on";
 endmodule
 ```
+- **For details on the GDS and LEF file generation for the aux cells [CLICK HERE](https://github.com/sanampudig/OpenFASoC/tree/main/AUXCELL)**
 
 **5. Final modification of the python scripts according to the above four inputs**
 - This is the Actual Verilog generation stage where the above four inputs are taken into consideration and a pyhton script exclusive to the present design is created.
 - The python scripts for the example of tempsense-gen are [temp-sense-gen.py](https://github.com/idea-fasoc/OpenFASOC/blob/main/openfasoc/generators/temp-sense-gen/tools/temp-sense-gen.py) and [TEMP_netlist.py](https://github.com/idea-fasoc/OpenFASOC/blob/cbfe054c6e918b567b98ef8f70a79769747a37a8/openfasoc/generators/temp-sense-gen/tools/TEMP_netlist.py), for which the steps happening are clearly described above.
+
+### Author
+ - **Vinay Rayapati**
+
+### Contributors
+ - Vinay Rayapati
+ - Kunal Ghosh
+
+### Acknowledgments
+ - Kunal Ghosh, Director, VSD Corp. Pvt. Ltd.
+ - Dr.Madhav Rao, ECE Department, IIIT Bangalore.
+ - Dr.Murali, Co-ordinator(M.Tech), IIIT Bangalore.
+
+### References
+ - OpenFASOC https://github.com/idea-fasoc/OpenFASOC.git
+
+### Contact Information
+ - Vinay Rayapati,Post-Graduate student,International Institute of Information Technology Bangalore,vinayrayapati@outlook.com
+ - Kunal Ghosh, Director, VSD Corp. Pvt. Ltd.,kunalghosh@gmail.com
+ - Dr.Madhav Rao, ECE Department, IIIT Bangalore,mr@iiitb.ac.in
+ - Dr.Murali, Co-ordinator(M.Tech), IIIT Bangalore,coordinator-mtech@iiitb.ac.in
