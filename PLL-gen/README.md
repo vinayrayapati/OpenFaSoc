@@ -48,7 +48,7 @@ Avg Active time of DOWN > Avg Active time of UP   = Dis-Charging of Capacitance 
 ## OpenFASoc PLL Generation
 ---------------------------
 **1. Setup:-**
-- Gitclone the repository and copy the PLL-gen folder into the generators directory of the OpenFasoc Tool(Checkout the References below for the openfasoc ool).
+- Gitclone the repository and copy the `PLL-gen` folder into the generators directory of the `OpenFasoc Tool`(Checkout the References below for the openfasoc tool).
 ```
 git clone https://github.com/vinayrayapati/OpenFaSoc.git
 ```
