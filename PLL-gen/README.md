@@ -48,7 +48,7 @@ Avg Active time of DOWN > Avg Active time of UP   = Dis-Charging of Capacitance 
 ## OpenFASoc PLL Generation
 ---------------------------
 **1. Setup:-**
-- Gitclone the repository and copy the PLL-gen folder into the generators directory of the OpenFasoc Tool.
+- Gitclone the repository and copy the PLL-gen folder into the generators directory of the OpenFasoc Tool(Checkout the References below for the openfasoc ool).
 ```
 git clone https://github.com/vinayrayapati/OpenFaSoc.git
 ```
@@ -67,7 +67,7 @@ git clone https://github.com/vinayrayapati/OpenFaSoc.git
 **3. Synthesis to PNR flow:-**
 - Run the command `make sky130hd_pll` to run the verilog generation, Synthesis, Place and Route.
 
-<img width="516" alt="Screenshot 2022-11-21 at 7 45 33 PM" src="https://user-images.githubusercontent.com/110079631/203077243-4fc8c583-8091-4804-ac60-66597469376f.png">
+<img width="568" alt="Screenshot 2022-11-21 at 7 46 59 PM" src="https://user-images.githubusercontent.com/110079631/203078222-5fc987bd-c24f-4cfa-94fa-3e1fc1eba957.png">
 
 - Verilog Generated:
 
@@ -76,3 +76,31 @@ git clone https://github.com/vinayrayapati/OpenFaSoc.git
 - Synthesis Finished:
 
 <img width="564" alt="Screenshot 2022-11-21 at 7 49 03 PM" src="https://user-images.githubusercontent.com/110079631/203077745-ded9e31a-c77c-4601-a5dc-a5008155620f.png">
+
+- The Synthesised Verilog Files are stored in the /PLL-gen/flow/results/sky130hd/PLL folder.
+
+- Flooorplan in progres...
+
+## INPUT LINKS
+- **For details on the GDS and LEF file generation for the aux cells [CLICK HERE](https://github.com/sanampudig/OpenFASoC/tree/main/AUXCELL)**
+
+### Author
+ - **Vinay Rayapati**
+
+### Contributors
+ - Vinay Rayapati
+ - Kunal Ghosh
+
+### Acknowledgments
+ - Kunal Ghosh, Director, VSD Corp. Pvt. Ltd.
+ - Dr.Madhav Rao, ECE Department, IIIT Bangalore.
+ - Dr.Murali, Co-ordinator(M.Tech), IIIT Bangalore.
+
+### References
+ - OpenFASOC https://github.com/idea-fasoc/OpenFASOC.git
+
+### Contact Information
+ - Vinay Rayapati,Post-Graduate student,International Institute of Information Technology Bangalore,vinayrayapati@outlook.com
+ - Kunal Ghosh, Director, VSD Corp. Pvt. Ltd.,kunalghosh@gmail.com
+ - Dr.Madhav Rao, ECE Department, IIIT Bangalore,mr@iiitb.ac.in
+ - Dr.Murali, Co-ordinator(M.Tech), IIIT Bangalore,coordinator-mtech@iiitb.ac.in
