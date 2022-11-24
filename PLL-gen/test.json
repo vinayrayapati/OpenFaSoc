@@ -1,8 +1,0 @@
-{
-    "module_name": "PLL",
-    "generator": "PLL-gen",
-    "specifications": {
-    	"frequency": { "min": 5, "max": 12 },
-    	"model" :"modelfile.csv"
-	}
-}
