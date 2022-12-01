@@ -1,63 +1,64 @@
-# Get tap and endcap cells
-set block [ord::get_db_block]
-set all_insts [$block getInsts]
-set region [$block findRegion "PLL"]
-set boundary [$region getBoundaries]
-set caps_pll {}
-set caps_core {}
-foreach inst $all_insts {
-  if {[[$inst getMaster] getName] eq "sky130_fd_sc_hd__tapvpwrvgnd_1" || \
-      [[$inst getMaster] getName] eq "sky130_fd_sc_hd__decap_4"} {
-    set box [$inst getBBox]
-
-    # Select cells from PLL region
-    if { [$box xMin] >= [$boundary xMin] && [$box xMax] <= [$boundary xMax] \
-      && [$box yMin] >= [$boundary yMin] && [$box yMax] <= [$boundary yMax]} {
-        lappend caps_pll $inst
-      } else {
-        lappend caps_core $inst
-      }
-  }
-}
-
-# Add global connections
-add_global_connection -net VDD -inst_pattern {.*} -pin_pattern {VPWR|VDD} -power ;# default: VDD as power
-add_global_connection -net VSS -inst_pattern {.*} -pin_pattern {VGND|VSS} -ground
-
-# Manually add connections for tap and encap cells
-foreach inst $caps_core {
-  add_global_connection -net VDD -inst_pattern [$inst getName] -pin_pattern {VPWR|VDD} -power
-}
-
+####################################
+# global connections
+####################################
+#add_global_connection -defer_connection -net {VDD} -pin_pattern {^VDD$} -power
+#add_global_connection -defer_connection -net {VDD} -pin_pattern {^VDDPE$}
+add_global_connection -net {VDD} -pin_pattern {VPWR} -power
+add_global_connection -net {VDD} -pin_pattern {vpwr}
+add_global_connection -net {VDD} -pin_pattern {VPB}
+#add_global_connection -net {VDD} -pin_pattern {vpb}
+#add_global_connection -defer_connection -net {VSS} -pin_pattern {^VSS$} -ground
+#add_global_connection -defer_connection -net {VSS} -pin_pattern {^VSSE$}
+add_global_connection -net {VSS} -pin_pattern {VGND} -ground
+add_global_connection -net {VSS} -pin_pattern {GND}
+add_global_connection -net {VSS} -pin_pattern {VNB}
+add_global_connection -net {VSS} -pin_pattern {ENb}
+#add_global_connection -defer_connection -net {VREF} -pin_pattern {vref} -power
+#add_global_connection -net VREG -inst_pattern {.*} -pin_pattern {VREG} -power
+#add_global_connection -defer_connection -net {VREF} -pin_pattern {pin0} -power
+#add_global_connection -defer_connection -net {VREF} -pin_pattern {VREF} -power
+add_global_connection -net VIN -pin_pattern {VIN} -power
 global_connect
+####################################
+# voltage domains
+####################################
+set_voltage_domain -name {CORE} -power {VDD} -ground {VSS}
+set_voltage_domain -region {PLL} -power {VDD} -ground {VSS} -secondary_power VIN
+####################################
+# standard cell grid
+####################################
+define_pdn_grid -name {grid} -pins {met5} -voltage_domains {CORE}
 
-# Set voltage domains
-# PLL region created with the create_voltage_domain command
-set_voltage_domain -name CORE -power VDD -ground VSS
-set_voltage_domain -region PLL -power VDD -ground VSS
+add_pdn_stripe -grid {grid} -layer {met1} -width {0.49} -pitch {5.48} -offset {0} -extend_to_core_ring -followpins
+add_pdn_stripe -grid {grid} -layer {met4} -starts_with POWER -width {1.2} -pitch {27.0} -offset {2} -extend_to_core_ring
+add_pdn_stripe -grid {grid} -layer {met5} -starts_with POWER -width {1.6} -pitch {29.1} -offset {2} -extend_to_core_ring
 
-# Standard cell grids
-# VDD / GND
-define_pdn_grid -name stdcell -pins met5 -starts_with POWER -voltage_domains CORE
+add_pdn_ring -grid {grid} -layer {met4 met5} -widths 5.0 -spacings  2.0 -core_offset 2.0
 
-add_pdn_stripe -grid stdcell -layer met1 -width 0.49 -pitch 6.66 -offset 0 -extend_to_core_ring -followpins
-add_pdn_ring -grid stdcell -layer {met4 met5} -widths {5.0 5.0} -spacings {2.0 2.0} -core_offsets {2.0 2.0}
-add_pdn_stripe -grid stdcell -layer met4 -width 1.2 -pitch 56.0 -offset 2 -extend_to_core_ring
+add_pdn_connect -grid {grid} -layers {met1 met4}
+add_pdn_connect -grid {grid} -layers {met4 met5}
+####################################
+define_pdn_grid -name stdcell_analog1  -starts_with POWER -voltage_domains PLL -pins {met3}
 
-# Straps to connect the two domains together
-add_pdn_stripe -grid stdcell -layer met5 -width 1.6 -offset 80.0 -pitch 56.0 -extend_to_core_ring -starts_with GROUND
-add_pdn_stripe -grid stdcell -layer met5 -width 1.6 -pitch 15.0 -extend_to_core_ring -starts_with GROUND -number_of_straps 4 -nets VSS
+add_pdn_stripe -grid stdcell_analog1 -layer met1 -width {0.49} -pitch {5.48} -offset 0 -extend_to_core_ring -followpins
+add_pdn_ring -grid stdcell_analog1 -layer {met4 met3} -widths {5.0 5.0} -spacings {2.0 2.0} -core_offsets {2.0 2.0}
+#add_pdn_stripe -grid stdcell_analog1 -layer met4 -width 1.2 -pitch 10.0 -offset 2 -extend_to_core_ring
+add_pdn_stripe -grid stdcell_analog1 -layer met3 -width 1.2 -pitch 27.0 -offset 2 -extend_to_core_ring
 
-add_pdn_connect -grid stdcell -layers {met4 met5}
-add_pdn_connect -grid stdcell -layers {met1 met4}
+add_pdn_connect -grid stdcell_analog1 -layers {met4 met3}
+add_pdn_connect -grid stdcell_analog1 -layers {met1 met4}
+add_pdn_connect -grid stdcell_analog1 -layers {met4 met5}
 
-# VIN / GND
-define_pdn_grid -name stdcell_analog -pins met3 -starts_with POWER -voltage_domains PLL
 
-add_pdn_stripe -grid stdcell_pll -layer met1 -width 0.49 -pitch 6.66 -offset 0 -extend_to_core_ring -followpins
-add_pdn_ring -grid stdcell_pll -layer {met4 met3} -widths {5.0 5.0} -spacings {2.0 2.0} -core_offsets {2.0 2.0}
-add_pdn_stripe -grid stdcell_pll -layer met4 -width 1.2 -pitch 56.0 -offset 2 -extend_to_core_ring
 
-add_pdn_connect -grid stdcell_pll -layers {met4 met3}
-add_pdn_connect -grid stdcell_pll -layers {met1 met4}
-add_pdn_connect -grid stdcell_pll -layers {met4 met5}
+####################################
+####################################
+# macro grids
+####################################
+####################################
+# grid for: CORE_macro_grid_1
+####################################
+define_pdn_grid -name {CORE_macro_grid_1} -voltage_domains {CORE} -macro -orient {R0 R180 MX MY} -halo {2.0 2.0 2.0 2.0} -default -grid_over_boundary -obstructions {li1 met1 met2 met3 met4}
+
+add_pdn_connect -grid {CORE_macro_grid_1} -layers {met4 met5}
+add_pdn_connect -grid {CORE_macro_grid_1} -layers {met1 met4}

@@ -9,3 +9,5 @@ check_placement
 if {![info exists save_checkpoint] || $save_checkpoint} {
   write_db $::env(RESULTS_DIR)/4_2_cts_fillcell.odb
 }
+  read_db $::env(RESULTS_DIR)/3_place.odb
+  write_def $::env(RESULTS_DIR)/3_place.def

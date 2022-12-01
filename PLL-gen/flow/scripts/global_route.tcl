@@ -2,9 +2,9 @@ utl::set_metrics_stage "globalroute__{}"
 source $::env(SCRIPTS_DIR)/load.tcl
 load_design 4_cts.odb 4_cts.sdc "Starting global routing"
 
-if {[info exist env(PRE_GLOBAL_ROUTE)]} {
-  source $env(PRE_GLOBAL_ROUTE)
-}
+#if {[info exist env(PRE_GLOBAL_ROUTE)]} {
+#  source $env(PRE_GLOBAL_ROUTE)
+#}
 
 if {[info exist env(FASTROUTE_TCL)]} {
   source $env(FASTROUTE_TCL)

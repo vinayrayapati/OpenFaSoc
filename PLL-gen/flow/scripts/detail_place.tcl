@@ -10,7 +10,9 @@ set_placement_padding -global \
 
 # place header cells in the right, starting from row 1 upward (not randomly)
 source $::env(SCRIPTS_DIR)/openfasoc/custom_place.tcl
-customPlace_east [ord::get_db_block] "HEADER" 1 no
+customPlace_east [ord::get_db_block] "VCO" 8 no
+customPlace_east [ord::get_db_block] "CP" 6 no
+
 
 detailed_placement
 
@@ -33,3 +35,4 @@ report_metrics "detailed place"
 if {![info exists save_checkpoint] || $save_checkpoint} {
   write_db $::env(RESULTS_DIR)/3_5_place_dp.odb
 }
+
