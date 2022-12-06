@@ -79,7 +79,62 @@ git clone https://github.com/vinayrayapati/OpenFaSoc.git
 
 - The Synthesised Verilog Files are stored in the /PLL-gen/flow/results/sky130hd/PLL folder.
 
-- Flooorplan in progres...
+- Running Flooorplan:
+
+<img width="568" alt="Screenshot 2022-12-06 at 11 46 26 PM" src="https://user-images.githubusercontent.com/110079631/205991123-8d686f01-c693-4c01-8971-3e2600712476.png">
+
+- Floorplan Power Report:
+
+<img width="561" alt="Screenshot 2022-12-06 at 11 46 43 PM" src="https://user-images.githubusercontent.com/110079631/205991441-df3ca183-cb45-4309-aa15-9ca3d5dc0d77.png">
+
+- Macros Identification in Floorplan:
+
+<img width="572" alt="Screenshot 2022-12-06 at 11 47 10 PM" src="https://user-images.githubusercontent.com/110079631/205991582-eab00b04-82a7-4b99-86fb-0de45c228425.png">
+
+- Floorplan Finished:
+
+<img width="572" alt="Screenshot 2022-12-06 at 11 47 23 PM" src="https://user-images.githubusercontent.com/110079631/205991642-043e1842-b777-4291-8dac-7a8938dacfb5.png">
+
+- Running Placement:
+
+<img width="571" alt="Screenshot 2022-12-06 at 11 47 33 PM" src="https://user-images.githubusercontent.com/110079631/205991745-6c2327ab-24d4-4bdf-8652-66bc40479a23.png">
+
+- Placement Analysis Report:
+
+<img width="566" alt="Screenshot 2022-12-06 at 11 48 02 PM" src="https://user-images.githubusercontent.com/110079631/205991841-7ced150b-ceec-48fb-9f9f-8e8034a3bd78.png">
+
+- Detailed Placement Power Report:
+
+<img width="567" alt="Screenshot 2022-12-06 at 11 48 14 PM" src="https://user-images.githubusercontent.com/110079631/205991955-68720d24-b589-4aec-b9b0-fac83264c83d.png">
+
+- Placement Finished:
+
+<img width="568" alt="Screenshot 2022-12-06 at 11 48 24 PM" src="https://user-images.githubusercontent.com/110079631/205992018-c4d70a23-27b4-4e51-829e-21e34b277f82.png">
+
+- Run Routing:
+
+<img width="571" alt="Screenshot 2022-12-06 at 11 48 34 PM" src="https://user-images.githubusercontent.com/110079631/205992110-6cd9ae0f-fb0c-4eea-a2fd-5dcadc3d58a1.png">
+
+- Global Route Power Report:
+
+<img width="569" alt="Screenshot 2022-12-06 at 11 48 56 PM" src="https://user-images.githubusercontent.com/110079631/205992226-6688782a-cda7-44fc-a22c-7ddd62ad29f7.png">
+
+- Optimization Iterations in Routing:
+
+<img width="568" alt="Screenshot 2022-12-06 at 11 49 21 PM" src="https://user-images.githubusercontent.com/110079631/205992467-acb5ef4c-fe62-436a-b13e-07a13955702e.png">
+
+- PNR Finished and final.gds Generated:
+
+<img width="568" alt="Screenshot 2022-12-06 at 11 50 40 PM" src="https://user-images.githubusercontent.com/110079631/205992583-66334602-d2d7-478d-a864-b936dd215019.png">
+
+## Future Work
+---------------
+- Verification of the custom_placement under detail_placement is required.
+- A few of the errors faced in routing are bypassed(by not creating a routable net for VIN,removing path to create_routable_power_net.tcl in pre_global_route.tcl) ,which is resulting in the incorrect routing of the macro cells which can be clearly seen in the final.gds layout. Need to rectify the errors and run the flow.
+- Routing is crashing, which is bypassed by removing the path to create_routable_power_net.tcl as mentioned above. Rectification and identification of the cause for the crash is needed.
+- Warnings are generated in routing for missing connections. Need to verify whether this is due to the errors bypassed in the routing or any new issue.
+- Model File updation for more cases is required to achieve the pll generation for different input requirements that achieves best performance.
+- Need for constraints according to the model file created.
 
 ## INPUT LINKS
 - **For details on the GDS and LEF file generation for the aux cells [CLICK HERE](https://github.com/sanampudig/OpenFASoC/tree/main/AUXCELL)**
