@@ -127,6 +127,10 @@ git clone https://github.com/vinayrayapati/OpenFaSoc.git
 
 <img width="568" alt="Screenshot 2022-12-06 at 11 50 40 PM" src="https://user-images.githubusercontent.com/110079631/205992583-66334602-d2d7-478d-a864-b936dd215019.png">
 
+- Final Gds Layout:
+
+<img width="847" alt="Screenshot 2022-12-01 at 7 51 32 PM" src="https://user-images.githubusercontent.com/110079631/205996238-3a3a6b7b-8d89-4475-9782-7ce71b1c6c95.png">
+
 ## Future Work
 ---------------
 - Verification of the custom_placement under detail_placement is required.
